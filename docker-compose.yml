@@ -1,0 +1,102 @@
+services:
+  library-server:
+    build: library-server
+    image: guilhermesgc/library-server:0.0.1-SNAPSHOT
+    ports:
+      - 8761:8761
+    restart: always
+    networks:
+      - erudio-network
+
+  zipkin-server:
+    image: openzipkin/zipkin:3.5.1
+    ports:
+      - 9411:9411
+    restart: always
+
+  api-gateway:
+    build: api-gateway
+    image: guilhermesgc/api-gateway:0.0.1-SNAPSHOT
+    ports:
+      - 8765:8765
+    restart: always
+    depends_on:
+      - library-server
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://library-server:8761/eureka
+    networks:
+      - erudio-network
+
+  library-db:
+    image: mysql:9.5.0
+    ports:
+      - 3310:3306
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: Admin123
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: Admin123
+      MYSQL_DATABASE: librarydb
+    networks:
+      - erudio-network
+
+  book-db:
+    image: mysql:9.5.0
+    ports:
+      - 3308:3306
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: Admin123
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: Admin123
+      MYSQL_DATABASE: bookdb
+    networks:
+      - erudio-network
+
+  book-service:
+    image: guilhermesgc/book-service
+    restart: always
+    build:
+      context: ./book-service/book-service
+      dockerfile: Dockerfile
+    depends_on:
+      - library-server
+      - book-db
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://library-server:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:mysql://book-db:3306/bookdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
+      SPRING_DATASOURCE_USERNAME: docker
+      SPRING_DATASOURCE_PASSWORD: Admin123
+    ports:
+      - 7000:7000
+    networks:
+      - erudio-network
+
+  library-service:
+    image: guilhermesgc/library-service
+    restart: always
+    build:
+      context: ./library-service/library-service
+      dockerfile: Dockerfile
+    depends_on:
+      - library-server
+      - library-db
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://library-server:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:mysql://library-db:3306/librarydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
+      SPRING_DATASOURCE_USERNAME: docker
+      SPRING_DATASOURCE_PASSWORD: Admin123
+    ports:
+      - 8000:8000
+    networks:
+      - erudio-network
+
+
+networks:
+  erudio-network:
+    name: erudio-network
+    driver: bridge

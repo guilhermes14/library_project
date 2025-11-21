@@ -1,0 +1,3 @@
+projetodebloco\ese\api_gateway\config\ApiGatewayConfiguration.class
+projetodebloco\ese\api_gateway\filter\LoggingFilter.class
+projetodebloco\ese\api_gateway\ApiGatewayApplication.class

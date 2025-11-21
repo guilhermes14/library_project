@@ -1,0 +1,10 @@
+projetodebloco\ese\library_service\model\Library.class
+projetodebloco\ese\library_service\client\BookClientComponent.class
+projetodebloco\ese\library_service\service\LibraryService.class
+projetodebloco\ese\library_service\model\LibrarysBook.class
+projetodebloco\ese\library_service\repository\LibrarysBookRepository.class
+projetodebloco\ese\library_service\LibraryServiceApplication.class
+projetodebloco\ese\library_service\model\dto\BookDTO.class
+projetodebloco\ese\library_service\repository\LibraryRepository.class
+projetodebloco\ese\library_service\model\dto\LibraryDetailsDTO.class
+projetodebloco\ese\library_service\controller\LibraryController.class

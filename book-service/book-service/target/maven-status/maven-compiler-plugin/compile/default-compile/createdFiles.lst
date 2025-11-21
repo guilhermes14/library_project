@@ -1,0 +1,5 @@
+projetodebloco\ese\book_service\repository\BookRepository.class
+projetodebloco\ese\book_service\model\Book.class
+projetodebloco\ese\book_service\BookServiceApplication.class
+projetodebloco\ese\book_service\controller\BookController.class
+projetodebloco\ese\book_service\service\BookService.class
